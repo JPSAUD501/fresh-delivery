@@ -1,10 +1,12 @@
 import { useEffect, useState } from "preact/hooks";
 import type { Store } from "../db/schema.ts";
+import StoreForm from "../components/admin/StoreForm.tsx";
 
 const PlatformAdminIsland = () => {
   const [stores, setStores] = useState<Store[]>([]);
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [showStoreForm, setShowStoreForm] = useState(false);
 
   useEffect(() => {
     if (authenticated) {
@@ -49,6 +51,20 @@ const PlatformAdminIsland = () => {
     }
   };
 
+  const handleAddStore = async (data: { name: string; whatsapp: string; password: string }) => {
+    try {
+      await fetch("/api/stores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      loadStores();
+      setShowStoreForm(false);
+    } catch (error) {
+      console.error("Error adding store:", error);
+    }
+  };
+
   if (!authenticated) {
     return (
       <div class="min-h-screen flex items-center justify-center bg-gray-50">
@@ -83,7 +99,15 @@ const PlatformAdminIsland = () => {
       {/* Store List */}
       <main class="max-w-7xl mx-auto px-4 py-6">
         <div class="bg-white rounded-lg shadow p-6">
-          <h2 class="text-lg font-medium mb-4">Lojas Cadastradas</h2>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-medium">Lojas Cadastradas</h2>
+            <button
+              onClick={() => setShowStoreForm(true)}
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Adicionar Loja
+            </button>
+          </div>
           <div class="space-y-4">
             {stores.map((store) => (
               <div key={store.id} class="flex flex-col sm:flex-row justify-between items-center border rounded-lg p-4">
@@ -111,6 +135,12 @@ const PlatformAdminIsland = () => {
             ))}
           </div>
         </div>
+        {showStoreForm && (
+          <StoreForm
+            onSubmit={handleAddStore}
+            onClose={() => setShowStoreForm(false)}
+          />
+        )}
       </main>
     </div>
   );
