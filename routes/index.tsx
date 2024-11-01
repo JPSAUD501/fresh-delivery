@@ -10,7 +10,7 @@ export default function Home() {
           Encontre os melhores restaurantes e faça seu pedido em poucos cliques.
         </p>
         <a
-          href="/loja/minha-loja"
+          href="/loja/9d0a99f7-fd0d-492f-80b3-23ef6737476b"
           class="bg-white text-primary px-6 py-3 rounded-full font-semibold shadow hover:bg-gray-100 transition duration-300"
         >
           Começar a pedir
